@@ -1,10 +1,19 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseInterceptors } from '@nestjs/common';
 import { SongsService } from './songs.service';
 import { CreateSongDTO } from './create-song.dto'
+import { ExecutionTime } from 'src/execution-time.interceptors';
 
 @Controller('songs')
 export class SongsController {
     constructor (private readonly songsService : SongsService) {}
+
+    @Post()
+    @UseInterceptors(ExecutionTime)
+    create(@Body() createSongDTO : CreateSongDTO) {
+        return this.songsService.create(createSongDTO);    
+    }
+
+    
     @Get()
     FindAll() {
         return this.songsService.findAll() ;
@@ -26,11 +35,7 @@ export class SongsController {
         return this.songsService.delete(id);
     }
 
-    @Post()
-    create(@Body() createSongDTO : CreateSongDTO) {
-        return this.songsService.create(createSongDTO);    
-    }
-
+   
 
 
 }
